@@ -1,4 +1,7 @@
-import { Button } from "@/components/ui/button";
+"use client";
+import { Cats } from "@prisma/client";
+import React, { useActionState, useEffect, useState } from "react";
+import { createCatsAction } from "./action";
 import {
   Card,
   CardContent,
@@ -10,30 +13,32 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createCats, getCats } from "@/service/cats";
+import { Button } from "@/components/ui/button";
+function ClientPage() {
+  const [cats, setCats] = useState<Cats[]>();
+  const [state, action, pending] = useActionState(createCatsAction, {} as any);
 
-export default async function Home() {
-  const cats = await getCats();
+  useEffect(() => {
+    fetch("/api/cats").then((res) =>
+      res.json().then((data) => setCats(data as Cats[]))
+    );
+  }, [state]);
   return (
     <div>
       <ul>
-        {cats.map((cat, idx) => (
-          <li key={idx} className="list-disc">
-            {cat.name} - {cat.breed} - {cat.spayed ? "true" : "false"}
-          </li>
-        ))}
+        {cats &&
+          cats.map((cat, idx) => (
+            <li key={idx} className="list-disc">
+              {cat.name} - {cat.breed} - {cat.spayed ? "true" : "false"}
+            </li>
+          ))}
       </ul>
       <Card className="max-w-[24rem] mt-1">
         <CardHeader>
           <CardTitle>Kucing</CardTitle>
           <CardDescription>Tambah Kucing</CardDescription>
         </CardHeader>
-        <form
-          action={async (formData) => {
-            "use server";
-            await createCats(formData);
-          }}
-        >
+        <form action={action}>
           <CardContent className="flex flex-col gap-4">
             <div className="space-y-1.5">
               <Label>Nama</Label>
@@ -49,10 +54,14 @@ export default async function Home() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button type="submit">Tambah</Button>
+            <Button disabled={pending} type="submit">
+              Tambah
+            </Button>
           </CardFooter>
         </form>
       </Card>
     </div>
   );
 }
+
+export default ClientPage;
