@@ -14,6 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 function ClientPage() {
   const [cats, setCats] = useState<Cats[]>();
   const [state, action, pending] = useActionState(createCatsAction, {} as any);
@@ -26,12 +27,15 @@ function ClientPage() {
   return (
     <div>
       <ul>
-        {cats &&
-          cats.map((cat, idx) => (
-            <li key={idx} className="list-disc">
-              {cat.name} - {cat.breed} - {cat.spayed ? "true" : "false"}
-            </li>
-          ))}
+        {cats
+          ? cats.map((cat, idx) => (
+              <li key={idx} className="list-disc">
+                {cat.name} - {cat.breed} - {cat.spayed ? "true" : "false"}
+              </li>
+            ))
+          : Array.from({ length: 4 }).map((_, idx) => (
+              <Skeleton key={idx} className="w-full h-8 mt-1" />
+            ))}
       </ul>
       <Card className="max-w-[24rem] mt-1">
         <CardHeader>
