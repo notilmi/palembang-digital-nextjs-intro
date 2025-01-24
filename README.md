@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Hello Palembang Digital!
+
+This is a sample web to introduce Next.js in [Palembang Digital's Tech Meetup](https://www.palembangdigital.org/events/132)
 
 ## Getting Started
 
